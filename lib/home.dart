@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:ui_ux/extensions.dart';
 import 'package:ui_ux/router.dart';
+import 'package:ui_ux/view/widget/chat_list.dart';
 
 import 'view/widget/chat_list_tile.dart';
 
@@ -14,7 +16,7 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
-      if (constraints.maxWidth > 730) {
+      if (constraints.isDesktop) {
         return DesktopScaffold(widget: this);
       }
       return MobileScaffold(widget: this);
@@ -22,7 +24,7 @@ class HomePage extends StatelessWidget {
   }
 }
 
-class MobileScaffold extends StatefulWidget {
+class MobileScaffold extends StatelessWidget {
   const MobileScaffold({
     super.key,
     required this.widget,
@@ -31,46 +33,18 @@ class MobileScaffold extends StatefulWidget {
   final HomePage widget;
 
   @override
-  State<MobileScaffold> createState() => _MobileScaffoldState();
-}
-
-class _MobileScaffoldState extends State<MobileScaffold> {
-  int conversationId = 0;
-
-  setConversation(int i) {
-    setState(() {
-      conversationId = i;
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_rounded),
-          onPressed: () => setConversation(0),
+        leading: BackButton(
+          onPressed: () => router.go('/'),
         ),
-        title: Text(widget.widget.title),
+        title: Text(widget.title),
         actions: [
           IconButton(onPressed: () => {}, icon: const Icon(Icons.search))
         ],
       ),
-      body: Center(
-        child: conversationId > 0
-            ? Conversation()
-            : ListView(
-                children: <Widget>[
-                  for (int i = 1; i < 30; i++) ...[
-                    ChatListTile(
-                      onTap: () {
-                        setConversation(i);
-                      },
-                    )
-                  ]
-                ],
-              ),
-      ),
+      body: Center(child: widget.child),
     );
   }
 }
@@ -87,23 +61,10 @@ class DesktopScaffold extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('test'),
+        title: Text(widget.title),
       ),
       body: Row(
-        children: [
-          NavigationDrawer(
-            children: <Widget>[
-              for (int i = 0; i < 5; i++) ...[
-                ChatListTile(
-                  onTap: () {
-                    router.go("/:$i");
-                  },
-                )
-              ]
-            ],
-          ),
-          Expanded(child: widget.child)
-        ],
+        children: [ChatList(), Expanded(child: widget.child)],
       ),
     );
   }
@@ -149,9 +110,9 @@ class ConversationHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       tileColor: Theme.of(context).colorScheme.secondaryContainer,
-      title: Text('Huma Prathama'),
-      subtitle: Text('online'),
-      leading: CircleAvatar(
+      title: const Text('Huma Prathama'),
+      subtitle: const Text('online'),
+      leading: const CircleAvatar(
         backgroundImage: AssetImage("person.webp"),
       ),
     );
@@ -175,14 +136,15 @@ class ConversationInputBox extends StatelessWidget {
             maxLines: 5,
             decoration: InputDecoration(
                 prefix: IconButton(
-                    onPressed: () {}, icon: Icon(Icons.attach_file_rounded)),
+                    onPressed: () {},
+                    icon: const Icon(Icons.attach_file_rounded)),
                 filled: true,
                 hintText: 'Message',
                 border: const OutlineInputBorder(
                     borderSide: BorderSide.none,
                     borderRadius: BorderRadius.all(Radius.circular(25)))),
           )),
-          Padding(padding: EdgeInsets.all(8)),
+          const Padding(padding: EdgeInsets.all(8)),
           Container(
             decoration: BoxDecoration(
                 color: Theme.of(context).colorScheme.primary,
@@ -190,7 +152,7 @@ class ConversationInputBox extends StatelessWidget {
             child: IconButton(
                 color: Theme.of(context).colorScheme.onPrimary,
                 onPressed: () {},
-                icon: Icon(Icons.send_rounded)),
+                icon: const Icon(Icons.send_rounded)),
           )
         ],
       ),
