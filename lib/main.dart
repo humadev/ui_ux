@@ -17,7 +17,6 @@ class MyApp extends StatelessWidget {
         theme: const AppTheme(lightColorScheme).toThemeData(),
         darkTheme: const AppTheme(darkColorScheme).toThemeData(),
         themeMode: ThemeMode.system,
-        routerConfig: router,
-        title: 'YPK App');
+        routerConfig: router);
   }
 }
