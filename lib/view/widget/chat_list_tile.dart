@@ -1,26 +1,29 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import 'package:ui_ux/router.dart';
+
+import '../../models/contact.dart';
+import '../../router.dart';
 
 class ChatListTile extends StatelessWidget {
-  const ChatListTile({super.key, required this.onTap});
+  const ChatListTile(this.contact, {super.key});
 
-  final Function() onTap;
+  final Contact contact;
 
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
       return ListTile(
-        onTap: onTap,
+        onTap: () {
+          router.push("/${contact.id}");
+        },
         contentPadding: const EdgeInsets.all(12),
         leading: CircleAvatar(
-          backgroundImage: AssetImage("person.webp"),
+          backgroundImage: AssetImage(contact.photo),
         ),
-        title: Text("Huma Prathama",
-            style: Theme.of(context).textTheme.titleMedium),
+        title:
+            Text(contact.name, style: Theme.of(context).textTheme.titleMedium),
         subtitle: Text(
-          "Reprehenderit eiusmod sunt incididunt nostrud eiusmod cupidatat.",
+          contact.lastChat,
           style: Theme.of(context)
               .textTheme
               .bodySmall
@@ -28,7 +31,8 @@ class ChatListTile extends StatelessWidget {
         ),
         trailing: Column(
           children: [
-            Text("23.10", style: Theme.of(context).textTheme.labelSmall),
+            Text(contact.lastChatTime,
+                style: Theme.of(context).textTheme.labelSmall),
             Container(
               decoration: BoxDecoration(
                   shape: BoxShape.circle,

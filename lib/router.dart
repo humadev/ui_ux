@@ -3,7 +3,6 @@ import 'package:go_router/go_router.dart';
 import 'package:ui_ux/extensions.dart';
 import 'package:ui_ux/home.dart';
 import 'package:ui_ux/view/widget/chat_list.dart';
-import 'package:ui_ux/view/widget/chat_list_tile.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
 final _shellNavigatorKey = GlobalKey<NavigatorState>();
@@ -31,10 +30,9 @@ final GoRouter router = GoRouter(
             })),
           ),
           GoRoute(
-            path: '/:id',
-            pageBuilder: (context, state) =>
-                const NoTransitionPage(child: Conversation()),
-          )
+              path: '/:id',
+              pageBuilder: (context, state) =>
+                  NoTransitionPage(child: Conversation(state.params['id']))),
         ]),
   ],
 );

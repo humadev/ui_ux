@@ -3,7 +3,9 @@ import 'package:go_router/go_router.dart';
 import 'package:ui_ux/extensions.dart';
 import 'package:ui_ux/router.dart';
 import 'package:ui_ux/view/widget/chat_list.dart';
+import 'package:ui_ux/view/widget/data.dart';
 
+import 'models/contact.dart';
 import 'view/widget/chat_list_tile.dart';
 
 class HomePage extends StatelessWidget {
@@ -64,65 +66,75 @@ class DesktopScaffold extends StatelessWidget {
         title: Text(widget.title),
       ),
       body: Row(
-        children: [ChatList(), Expanded(child: widget.child)],
+        children: [const ChatList(), Expanded(child: widget.child)],
       ),
     );
   }
 }
 
 class Conversation extends StatelessWidget {
-  const Conversation({
+  const Conversation(
+    this.id, {
     super.key,
   });
 
+  final String? id;
+
   @override
   Widget build(BuildContext context) {
+    Contact contact = chatList
+        .where(
+          (Contact c) => c.id == id,
+        )
+        .first;
     return Column(
       children: [
-        ConversationHeader(),
+        ConversationHeader(contact),
         Expanded(
             child: ListView(
           reverse: true,
-          children: <ConversationItem>[
-            ConversationItem(
-              me: false,
-            ),
-            ConversationItem(
-              me: true,
-            ),
-            ConversationItem(
-              me: false,
-            )
-          ],
+          children: contact.messages.map(
+            (e) {
+              return ConversationItem(
+                me: e.me,
+              );
+            },
+          ).toList(),
         )),
-        ConversationInputBox()
+        ConversationInputBox(contact)
       ],
     );
   }
 }
 
 class ConversationHeader extends StatelessWidget {
-  const ConversationHeader({
+  const ConversationHeader(
+    this.contact, {
     super.key,
   });
+
+  final Contact contact;
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
       tileColor: Theme.of(context).colorScheme.secondaryContainer,
-      title: const Text('Huma Prathama'),
+      title: Text(contact.name),
       subtitle: const Text('online'),
-      leading: const CircleAvatar(
-        backgroundImage: AssetImage("person.webp"),
+      leading: CircleAvatar(
+        backgroundImage: AssetImage(contact.photo),
       ),
     );
   }
 }
 
 class ConversationInputBox extends StatelessWidget {
-  const ConversationInputBox({
+  const ConversationInputBox(
+    this.contact, {
     super.key,
   });
+
+  final Contact contact;
 
   @override
   Widget build(BuildContext context) {
